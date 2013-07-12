@@ -17,7 +17,24 @@
  *	jquery.ui.position.js
  *	jquery.ui.resizable.js
  */
-(function( $, undefined ) {
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define([
+			"jquery",
+			"jqueryui/jquery.ui.core",
+			"jqueryui/jquery.ui.widget",
+			"jqueryui/jquery.ui.button",
+			"jqueryui/jquery.ui.draggable",
+			"jqueryui/jquery.ui.mouse",
+			"jqueryui/jquery.ui.position",
+			"jqueryui/jquery.ui.resizable"
+		], factory );
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
 
 var sizeRelatedOptions = {
 		buttons: true,
@@ -772,4 +789,4 @@ $.widget( "ui.dialog", {
 
 $.ui.dialog.overlayInstances = 0;
 
-}( jQuery ) );
+}));

@@ -13,7 +13,20 @@
  *	jquery.ui.mouse.js
  *	jquery.ui.widget.js
  */
-(function( $, undefined ) {
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define([
+			"jquery",
+			"jqueryui/jquery.ui.core",
+			"jqueryui/jquery.ui.mouse",
+			"jqueryui/jquery.ui.widget"
+		], factory );
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
 
 function isOverAxis( x, reference, size ) {
 	return ( x >= reference ) && ( x < ( reference + size ) );
@@ -1275,4 +1288,4 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 });
 
-})(jQuery);
+}));

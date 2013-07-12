@@ -11,7 +11,18 @@
  * Depends:
  *	jquery.ui.effect.js
  */
-(function( $, undefined ) {
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define([
+			"jquery",
+			"jqueryui/jquery.ui.effect"
+		], factory );
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
 
 var rvertical = /up|down|vertical/,
 	rpositivemotion = /up|left|vertical|horizontal/;
@@ -79,4 +90,4 @@ $.effects.effect.blind = function( o, done ) {
 
 };
 
-})(jQuery);
+}));

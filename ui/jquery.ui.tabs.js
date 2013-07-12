@@ -12,7 +12,19 @@
  *	jquery.ui.core.js
  *	jquery.ui.widget.js
  */
-(function( $, undefined ) {
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define([
+			"jquery",
+			"jqueryui/jquery.ui.core",
+			"jqueryui/jquery.ui.widget"
+		], factory );
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
 
 var tabId = 0,
 	rhash = /#.*$/;
@@ -846,4 +858,4 @@ $.widget( "ui.tabs", {
 	}
 });
 
-})( jQuery );
+}));

@@ -8,7 +8,15 @@
  *
  * http://api.jqueryui.com/category/ui-core/
  */
-(function( $, undefined ) {
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery" ], factory );
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
 
 var uuid = 0,
 	runiqueId = /^ui-id-\d+$/;
@@ -290,4 +298,4 @@ $.ui.plugin = {
 	}
 };
 
-})( jQuery );
+}));

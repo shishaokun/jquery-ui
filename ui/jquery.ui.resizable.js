@@ -13,7 +13,20 @@
  *	jquery.ui.mouse.js
  *	jquery.ui.widget.js
  */
-(function( $, undefined ) {
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define([
+			"jquery",
+			"jqueryui/jquery.ui.core",
+			"jqueryui/jquery.ui.mouse",
+			"jqueryui/jquery.ui.widget"
+		], factory );
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
 
 function num(v) {
 	return parseInt(v, 10) || 0;
@@ -988,4 +1001,4 @@ $.ui.plugin.add("resizable", "grid", {
 
 });
 
-})(jQuery);
+}));

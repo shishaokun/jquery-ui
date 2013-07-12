@@ -14,7 +14,21 @@
  *	jquery.ui.position.js
  *	jquery.ui.menu.js
  */
-(function( $, undefined ) {
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+		// AMD. Register as an anonymous module.
+		define([
+			"jquery",
+			"jqueryui/jquery.ui.core",
+			"jqueryui/jquery.ui.widget",
+			"jqueryui/jquery.ui.position",
+			"jqueryui/jquery.ui.menu"
+		], factory );
+	} else {
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
 
 $.widget( "ui.autocomplete", {
 	version: "@VERSION",
@@ -602,4 +616,4 @@ $.widget( "ui.autocomplete", $.ui.autocomplete, {
 	}
 });
 
-}( jQuery ));
+}));
