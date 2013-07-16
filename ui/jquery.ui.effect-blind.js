@@ -24,7 +24,7 @@
 	}
 }(function( $ ) {
 
-var rvertical = /up|down|vertical/,
+var blindRVertical = /up|down|vertical/,
 	rpositivemotion = /up|left|vertical|horizontal/;
 
 $.effects.effect.blind = function( o, done ) {
@@ -33,7 +33,7 @@ $.effects.effect.blind = function( o, done ) {
 		props = [ "position", "top", "bottom", "left", "right", "height", "width" ],
 		mode = $.effects.setMode( el, o.mode || "hide" ),
 		direction = o.direction || "up",
-		vertical = rvertical.test( direction ),
+		vertical = blindRVertical.test( direction ),
 		ref = vertical ? "height" : "width",
 		ref2 = vertical ? "top" : "left",
 		motion = rpositivemotion.test( direction ),

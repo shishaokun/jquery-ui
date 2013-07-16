@@ -18,7 +18,7 @@
 	}
 }(function( $ ) {
 
-var uuid = 0,
+var coreUuid = 0,
 	runiqueId = /^ui-id-\d+$/;
 
 // $.ui might exist from components with no dependencies, e.g., $.ui.position
@@ -83,7 +83,7 @@ $.fn.extend({
 	uniqueId: function() {
 		return this.each(function() {
 			if ( !this.id ) {
-				this.id = "ui-id-" + (++uuid);
+				this.id = "ui-id-" + (++coreUuid);
 			}
 		});
 	},
