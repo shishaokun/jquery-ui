@@ -305,7 +305,7 @@ grunt.registerMultiTask( "pre-requirejs", "Create require that will include appr
 	}
 });
 
-grunt.registerMultiTask('post-requirejs', "Strip define call from dist file", function() {
+grunt.registerMultiTask( "post-requirejs", "Strip define call from dist file", function() {
 	this.filesSrc.forEach(function( filepath ) {
 		// Remove `define("main" ...)` and `define("jquery-ui" ...)`
 		var contents = grunt.file.read( filepath ).replace( /define\("(main|jquery-ui)", function\(\)\{\}\);/g, "" );
