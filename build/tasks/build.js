@@ -131,8 +131,4 @@ grunt.registerMultiTask( "copy", "Copy files to destination folder and replace @
 	}
 });
 
-grunt.registerTask( "clean", function() {
-	require( "rimraf" ).sync( "dist" );
-});
-
 };

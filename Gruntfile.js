@@ -124,11 +124,13 @@ uiFiles.forEach(function( file ) {
 
 // grunt plugins
 grunt.loadNpmTasks( "grunt-compare-size" );
+grunt.loadNpmTasks( "grunt-contrib-clean" );
 grunt.loadNpmTasks( "grunt-contrib-concat" );
 grunt.loadNpmTasks( "grunt-contrib-csslint" );
 grunt.loadNpmTasks( "grunt-contrib-cssmin" );
 grunt.loadNpmTasks( "grunt-contrib-jshint" );
 grunt.loadNpmTasks( "grunt-contrib-qunit" );
+grunt.loadNpmTasks( "grunt-contrib-requirejs" );
 grunt.loadNpmTasks( "grunt-contrib-uglify" );
 grunt.loadNpmTasks( "grunt-git-authors" );
 grunt.loadNpmTasks( "grunt-html" );
@@ -157,23 +159,6 @@ grunt.initConfig({
 	},
 	compare_size: compareFiles,
 	concat: {
-		ui: {
-			options: {
-				banner: createBanner( uiFiles ),
-				stripBanners: {
-					block: true
-				}
-			},
-			src: uiFiles,
-			dest: "dist/jquery-ui.js"
-		},
-		i18n: {
-			options: {
-				banner: createBanner( allI18nFiles )
-			},
-			src: allI18nFiles,
-			dest: "dist/i18n/jquery-ui-i18n.js"
-		},
 		css: {
 			options: {
 				banner: createBanner( cssFiles ),
@@ -194,6 +179,11 @@ grunt.initConfig({
 		})
 	},
 	copy: {
+		dist_bundle_js: {
+			src: "dist/build/jquery-ui.js",
+			strip: /^dist\/build\//,
+			dest: "dist/"
+		},
 		dist_units_images: {
 			src: "themes/base/images/*",
 			strip: /^themes\/base\//,
@@ -208,6 +198,14 @@ grunt.initConfig({
 		})
 	},
 	jshint: {
+		dist_bundle_js: {
+			options: {
+				jshintrc: ".bundlejshintrc"
+			},
+			files: {
+				src: "dist/jquery-ui.js"
+			}
+		},
 		ui: {
 			options: {
 				jshintrc: "ui/.jshintrc"
@@ -240,16 +238,92 @@ grunt.initConfig({
 				csslintrc: ".csslintrc"
 			}
 		}
+	},
+	"pre-requirejs" : {
+		all: {
+			components: coreFiles.concat( uiFiles.map(function( file ) {
+				return file.replace( /ui\//, "" );
+			}) ),
+			dest: "dist/tmp/main.js"
+		}
+	},
+	requirejs: {
+		all: {
+			options: {
+				dir: "dist/build",
+				appDir: "ui",
+				baseUrl: ".",
+				optimize: "none",
+				optimizeCss: "none",
+				paths: {
+					"jquery": "../jquery-1.9.1",
+					"jqueryui": ".",
+					"main" : "../dist/tmp/main" // FIXME replace to <%= %>
+				},
+				/* try use include: [] instead adding dist/tmp/main with require(...) */
+				modules : [{
+					name : "jquery-ui",
+					include : [ "main" ],
+					exclude: [ "jquery" ],
+					create : true
+				}],
+				wrap: {
+					start: createBanner() + "(function( $ ) {",
+					end: "})( jQuery );"
+				},
+				onBuildWrite: function ( id, path, contents ) {
+					if ( (/define\([\s\S]*?factory/).test( contents ) ) {
+						// Remove UMD wrapper
+						contents = contents.replace( /\(function\( factory[\s\S]*?\(function\( \$ \) \{/, "" );
+						contents = contents.replace( /\}\)\);\s*?$/, "" );
+					}
+					else if ( (/^require\(\[/).test( contents ) ) {
+						// Replace require with comment `//` instead of null string, because of the mysterious semicolon
+						contents = contents.replace( /^require[\s\S]*?\]\);$/, "// mysterious semicolon: " );
+					}
+
+					return contents;
+				}
+			}
+		}
+	},
+	"post-requirejs": {
+		all: [
+			"dist/build/jquery-ui.js"
+		]
+	},
+	clean: {
+		dist_garbage: [ "dist/build", "dist/tmp" ]
 	}
+});
+
+grunt.registerMultiTask( "pre-requirejs", "Create require that will include appropriate components' dependencies", function() {
+	if ( this.data.components.length ) {
+		grunt.file.write( this.data.dest, "require([\n\t\"jqueryui/" + this.data.components.map(function( file ) {
+			return file.replace( /\.js/, "" );
+		}).join( "\",\n\t\"jqueryui/" ) + "\"\n]);" );
+	}
+});
+
+grunt.registerMultiTask('post-requirejs', "Strip define call from dist file", function() {
+	this.filesSrc.forEach(function( filepath ) {
+		// Remove `define("main" ...)` and `define("jquery-ui" ...)`
+		var contents = grunt.file.read( filepath ).replace( /define\("(main|jquery-ui)", function\(\)\{\}\);/g, "" );
+
+		// Remove the mysterious semicolon `;` character left from require([...]);
+		contents = contents.replace( /\/\/ mysterious semicolon.*/g, "" );
+
+		grunt.file.write( filepath, contents );
+	});
 });
 
 grunt.registerTask( "default", [ "lint", "test" ] );
 grunt.registerTask( "lint", [ "jshint", "csslint", "htmllint" ] );
-grunt.registerTask( "test", [ "qunit" ] );
+grunt.registerTask( "test", [ "copy:dist_units_images", "qunit" ] );
 grunt.registerTask( "sizer", [ "concat:ui", "uglify:main", "compare_size:all" ] );
 grunt.registerTask( "sizer_all", [ "concat:ui", "uglify", "compare_size" ] );
 
-// "copy:dist_units_images" is used by unit tests
-grunt.registerTask( "build", [ "concat", "uglify", "cssmin", "copy:dist_units_images" ] );
+grunt.registerTask( "build", [ "clean", "pre-requirejs", "requirejs", "post-requirejs", "copy:dist_bundle_js", "clean:dist_garbage", "jshint:dist_bundle_js" ] );
+
 
 };
