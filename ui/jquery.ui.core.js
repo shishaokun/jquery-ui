@@ -260,34 +260,33 @@ $.fn.extend({
 	}
 });
 
-// $.ui.plugin is deprecated. Use $.widget() extensions instead.
-$.ui.plugin = {
-	add: function( module, option, set ) {
-		var i,
-			proto = $.ui[ module ].prototype;
-		for ( i in set ) {
-			proto.plugins[ i ] = proto.plugins[ i ] || [];
-			proto.plugins[ i ].push( [ option, set[ i ] ] );
-		}
-	},
-	call: function( instance, name, args, allowDisconnected ) {
-		var i,
-			set = instance.plugins[ name ];
+if (!('oninput' in document.createElement('input'))) {
+    $.event.special.input = {
+        setup: function () {
+            var lastValue = null;
+            $.event.add(this, 'keydown.specialInput', function (event) {
+                if (event.which === 8) {
+                    lastValue = this.value;
+                }
+            });
+            $.event.add(this, 'keyup.specialInput paste.specialInput', function (event) {
+                if (event.which === 9) return;
+                if (event.which === 8 && lastValue === this.value) return;
+                $.event.trigger('input', null, this);
+            });
+        },
+        teardown: function () {
+            $.event.remove(this, '.specialInput');
+        }
+    };
+}
 
-		if ( !set ) {
-			return;
-		}
-
-		if ( !allowDisconnected && ( !instance.element[ 0 ].parentNode || instance.element[ 0 ].parentNode.nodeType === 11 ) ) {
-			return;
-		}
-
-		for ( i = 0; i < set.length; i++ ) {
-			if ( instance.options[ set[ i ][ 0 ] ] ) {
-				set[ i ][ 1 ].apply( instance.element, args );
-			}
-		}
-	}
+$.fn.input = function (data, fn) {
+    if (typeof fn === 'undefined') {
+        fn = data;
+        data = null;
+    }
+    return arguments.length > 0 ? this.on('input', null, data, fn) : this.trigger('input');
 };
 
 })( jQuery );
