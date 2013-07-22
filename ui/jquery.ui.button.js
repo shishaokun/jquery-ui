@@ -15,7 +15,7 @@
 (function( $, undefined ) {
 
 var lastActive, startXPos, startYPos, clickDragged,
-	baseClasses = "ui-button ui-widget ui-state-default ui-corner-all",
+	baseClasses = "ui-button ui-widget ui-state-default",
 	typeClasses = "ui-button-icons-only ui-button-icon-only ui-button-text-icons ui-button-text-icon-primary ui-button-text-icon-secondary ui-button-text-only",
 	formResetHandler = function() {
 		var form = $( this );
@@ -70,7 +70,7 @@ $.widget( "ui.button", {
 		var that = this,
 			options = this.options,
 			toggleButton = this.type === "checkbox" || this.type === "radio",
-			activeClass = !toggleButton ? "ui-state-active" : "";
+			activeClass = toggleButton ? "" : "ui-state-active";
 
 		if ( options.label === null ) {
 			options.label = (this.type === "input" ? this.buttonElement.val() : this.buttonElement.html());
@@ -80,7 +80,6 @@ $.widget( "ui.button", {
 
 		this.buttonElement
 			.addClass( baseClasses )
-			.attr( "role", "button" )
 			.bind( "mouseenter" + this.eventNamespace, function() {
 				if ( options.disabled ) {
 					return;
@@ -154,7 +153,6 @@ $.widget( "ui.button", {
 					return false;
 				}
 				$( this ).addClass( "ui-state-active" );
-				that.buttonElement.attr( "aria-pressed", "true" );
 
 				var radio = that.element[ 0 ];
 				radioGroup( radio )
@@ -162,8 +160,7 @@ $.widget( "ui.button", {
 					.map(function() {
 						return $( this ).button( "widget" )[ 0 ];
 					})
-					.removeClass( "ui-state-active" )
-					.attr( "aria-pressed", "false" );
+					.removeClass( "ui-state-active" );
 			});
 		} else {
 			this.buttonElement
@@ -243,7 +240,6 @@ $.widget( "ui.button", {
 			if ( checked ) {
 				this.buttonElement.addClass( "ui-state-active" );
 			}
-			this.buttonElement.prop( "aria-pressed", checked );
 		} else {
 			this.buttonElement = this.element;
 		}
@@ -258,8 +254,6 @@ $.widget( "ui.button", {
 			.removeClass( "ui-helper-hidden-accessible" );
 		this.buttonElement
 			.removeClass( baseClasses + " ui-state-active " + typeClasses )
-			.removeAttr( "role" )
-			.removeAttr( "aria-pressed" )
 			.html( this.buttonElement.find(".ui-button-text").html() );
 
 		if ( !this.hasTitle ) {
@@ -291,23 +285,19 @@ $.widget( "ui.button", {
 			radioGroup( this.element[0] ).each(function() {
 				if ( $( this ).is( ":checked" ) ) {
 					$( this ).button( "widget" )
-						.addClass( "ui-state-active" )
-						.attr( "aria-pressed", "true" );
+						.addClass( "ui-state-active" );
 				} else {
 					$( this ).button( "widget" )
-						.removeClass( "ui-state-active" )
-						.attr( "aria-pressed", "false" );
+						.removeClass( "ui-state-active" );
 				}
 			});
 		} else if ( this.type === "checkbox" ) {
 			if ( this.element.is( ":checked" ) ) {
 				this.buttonElement
-					.addClass( "ui-state-active" )
-					.attr( "aria-pressed", "true" );
+					.addClass( "ui-state-active" );
 			} else {
 				this.buttonElement
-					.removeClass( "ui-state-active" )
-					.attr( "aria-pressed", "false" );
+					.removeClass( "ui-state-active" );
 			}
 		}
 	},

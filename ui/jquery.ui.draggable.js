@@ -576,7 +576,8 @@ $.widget("ui.draggable", $.ui.mouse, {
 		if(type === "drag") {
 			this.positionAbs = this._convertPositionTo("absolute");
 		}
-		return $.Widget.prototype._trigger.call(this, type, event, ui);
+		//return $.Widget.prototype._trigger.call(this, type, event, ui);
+		return this._super.call(this, type, event, ui);
 	},
 
 	plugins: {},
