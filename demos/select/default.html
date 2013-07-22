@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jQuery UI Dialog - Default functionality</title>
+	<link rel="stylesheet" href="../../themes/base/jquery.ui.all.css">
+	<script src="../../jquery-1.10.2.js"></script>
+	<script src="../../ui/jquery.ui.core.js"></script>
+	<script src="../../ui/jquery.ui.widget.js"></script>
+	<script src="../../ui/jquery.ui.select.js"></script>
+	<link rel="stylesheet" href="../demos.css">
+	<script>
+	$(function() {
+		$('.select').select();
+	});
+	</script>
+</head>
+<body>
+    <h1>Select</h1>
+    <select name="star" multiple>
+        <option>白羊座</option>
+        <option>双子座</option>
+        <option>巨蟹座</option>
+        <option>狮子座</option>
+        <option>处女座</option>
+        <option>天秤座</option>
+        <option>天蝎座</option>
+        <option>射手座</option>
+        <option>魔蝎座</option>
+        <option>水瓶座</option>
+        <option>双鱼座</option>
+    </select>
+    <div class="select" data-name="star" data-multiple>
+        <span>白羊座</span><i class="ico ico-arrow-down"></i>
+        <div class="select-options">
+            <ul>
+                <li class="active">白羊座</li>
+                <li>双子座</li>
+                <li>巨蟹座</li>
+                <li>狮子座</li>
+                <li>处女座</li>
+                <li>天秤座</li>
+                <li>天蝎座</li>
+                <li>射手座</li>
+                <li>魔蝎座</li>
+                <li>水瓶座</li>
+                <li>双鱼座</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
